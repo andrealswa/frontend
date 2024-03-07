@@ -86,11 +86,6 @@ export const TodoAppMain: React.FC = () => {
 	};
 
 	const renderTodoItems = () => {
-		const completedItems = listItems.filter((item) => item.completed);
-		const incompleteItems = listItems.filter(
-			(item) => !item.completed
-		);
-		console.log(listItems);
 		const displayItems = listItems.filter(
 			(item) => item.completed === displayCompleted
 		);
