@@ -1,0 +1,32 @@
+.todo-app-main--container {
+	display: flex;
+	flex-direction: column;
+
+	width: 100%;
+
+	.todo-app-main--card {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+		padding: 10px;
+		margin: 10px;
+
+		.todo-app-main--card-text {
+			display: flex;
+			align-items: center;
+			width: fit-content;
+			column-gap: 30px;
+		}
+		.todo-app-main--card-buttons {
+			display: flex;
+			width: fit-content;
+			column-gap: 10px;
+		}
+	}
+
+	.add-button {
+		width: fit-content;
+	}
+}
