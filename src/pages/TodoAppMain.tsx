@@ -9,7 +9,7 @@ import {
 	Tabs,
 	Text,
 } from '@chakra-ui/react';
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './TodoAppMain.scss';
 import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { AddTaskModal } from '../components/AddTaskModal';
@@ -50,12 +50,23 @@ export const TodoAppMain: React.FC = () => {
 		setIsModalOpen(!isModalOpen);
 	};
 
-	const handleSubmit = (item: any) => {
-		handleAddItem();
+	const handleEditItem = (item: TodoFields) => {
+		setActiveItem(item);
+		setIsModalOpen(!isModalOpen);
+	};
+
+	const handleDeleteItem = (item: TodoFields) => {
+		axios.delete(`/api/todos/${item.id}/`).then(refreshList);
+	};
+
+	const handleSubmit = (item: TodoFields) => {
+		setIsModalOpen(!isModalOpen);
+
 		if (item.id) {
 			axios.put(`/api/todos/${item.id}/`, item).then(refreshList);
 			return;
 		}
+
 		axios.post('/api/todos/', item).then(refreshList);
 	};
 
@@ -63,19 +74,11 @@ export const TodoAppMain: React.FC = () => {
 		return (
 			<Tabs colorScheme="teal">
 				<TabList>
-					<Tab
-						className={
-							displayCompleted ? 'nav-link' : 'nav-link active'
-						}
-						onClick={() => setDisplayCompleted(false)}>
-						Incomplete
+					<Tab onClick={() => setDisplayCompleted(false)}>
+						<Text>Incomplete</Text>
 					</Tab>
-					<Tab
-						className={
-							displayCompleted ? 'nav-link active' : 'nav-link'
-						}
-						onClick={() => setDisplayCompleted(true)}>
-						Complete
+					<Tab onClick={() => setDisplayCompleted(true)}>
+						<Text>Complete</Text>
 					</Tab>
 				</TabList>
 			</Tabs>
@@ -83,52 +86,52 @@ export const TodoAppMain: React.FC = () => {
 	};
 
 	const renderTodoItems = () => {
-		if (listItems == null) {
+		const completedItems = listItems.filter((item) => item.completed);
+		const incompleteItems = listItems.filter(
+			(item) => !item.completed
+		);
+		console.log(listItems);
+		const displayItems = listItems.filter(
+			(item) => item.completed === displayCompleted
+		);
+		if (displayItems.length === 0) {
 			return (
 				<Card className="todo-app-main--card">
 					<div className="todo-app-main--card-text">
-						<CardHeader
-							fontSize="2xl"
-							className={displayCompleted ? 'completed-todo' : ''}>
-							No list items
+						<CardHeader fontSize="2xl">
+							<Text>No list items</Text>
 						</CardHeader>
-						<CardBody
-							className={displayCompleted ? 'completed-todo' : ''}>
-							Please add items to todo list
+						<CardBody>
+							<Text>Please add items to todo list</Text>
 						</CardBody>
 					</div>
 				</Card>
 			);
 		} else {
-			const newItems = listItems.filter(
-				(item) => item.completed === displayCompleted
-			);
-
-			return newItems.map((item) => (
+			return displayItems.map((item) => (
 				<Card key={item.id} className="todo-app-main--card">
 					<div className="todo-app-main--card-text">
-						<CardHeader
-							fontSize="2xl"
-							className={displayCompleted ? 'completed-todo' : ''}>
-							{item.title}
+						<CardHeader fontSize="2xl">
+							<Text>{item.title}</Text>
 						</CardHeader>
-						<CardBody
-							className={displayCompleted ? 'completed-todo' : ''}>
-							{item.description}
+						<CardBody>
+							<Text>{item.description}</Text>
 						</CardBody>
 					</div>
 					<div className="todo-app-main--card-buttons">
 						<Button
+							onClick={() => handleEditItem(item)}
 							colorScheme="teal"
 							variant="outline"
 							leftIcon={<EditIcon />}>
-							Edit
+							<Text>Edit</Text>
 						</Button>
 						<Button
+							onClick={() => handleDeleteItem(item)}
 							colorScheme="red"
 							variant="solid"
 							leftIcon={<DeleteIcon />}>
-							Delete
+							<Text>Delete</Text>
 						</Button>
 					</div>
 				</Card>
@@ -148,12 +151,13 @@ export const TodoAppMain: React.FC = () => {
 				colorScheme="teal"
 				variant="solid"
 				leftIcon={<AddIcon />}>
-				Add task
+				<Text>Add task</Text>
 			</Button>
 			{isModalOpen && (
 				<AddTaskModal
 					item={activeItem}
 					isOpen={isModalOpen}
+					setIsOpen={setIsModalOpen}
 					onSave={handleSubmit}
 				/>
 			)}
