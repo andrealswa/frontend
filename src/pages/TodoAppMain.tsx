@@ -13,11 +13,7 @@ import React, { Component, useState } from 'react';
 import './TodoAppMain.scss';
 import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 
-export interface TodoAppMainProps {
-	className?: string;
-}
-
-export const TodoAppMain: React.FC = (props: TodoAppMainProps) => {
+export const TodoAppMain: React.FC = () => {
 	const [displayCompleted, setDisplayCompleted] =
 		useState<boolean>(false);
 
