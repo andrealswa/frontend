@@ -86,9 +86,9 @@ export const TodoAppMain: React.FC = () => {
 	};
 
 	const renderTodoItems = () => {
-		const displayItems = listItems?.filter(
-			(item) => item.completed === displayCompleted
-		);
+		const displayItems =
+			listItems &&
+			listItems.filter((item) => item.completed === displayCompleted);
 		if (displayItems.length === 0) {
 			return (
 				<Card className="todo-app-main--card">
