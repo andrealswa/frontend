@@ -36,7 +36,7 @@ export const TodoAppMain: React.FC = () => {
 	const refreshList = () => {
 		axios
 			.get('/api/todos/')
-			.then((res) => setListItems(res.data))
+			.then((res) => setListItems([...res.data]))
 			.catch((err) => console.log(err));
 	};
 
@@ -87,9 +87,13 @@ export const TodoAppMain: React.FC = () => {
 
 	const renderTodoItems = () => {
 		const displayItems =
-			(listItems as TodoFields[]) &&
+			Array.isArray(listItems) &&
 			listItems.filter((item) => item.completed === displayCompleted);
-		if (displayItems.length === 0) {
+		if (
+			displayItems == null ||
+			!displayItems ||
+			(displayItems && displayItems.length === 0)
+		) {
 			return (
 				<Card className="todo-app-main--card">
 					<div className="todo-app-main--card-text">
