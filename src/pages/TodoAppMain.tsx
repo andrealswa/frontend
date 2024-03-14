@@ -99,7 +99,7 @@ export const TodoAppMain: React.FC = () => {
 
 			setListItems(
 				listItems.map((todo) =>
-					todo.id == item.id ? { ...updatedItem } : todo
+					todo.id === item.id ? { ...updatedItem } : todo
 				)
 			);
 
