@@ -14,28 +14,22 @@ import {
 	ModalOverlay,
 	Text,
 } from '@chakra-ui/react';
+import { TodoFields } from '../pages/TodoAppMain';
 
 interface AddTaskModalProps {
 	className?: string;
 	isOpen: boolean;
 	setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	onSave: any;
-	item: any;
+	activeItem: TodoFields;
+	setActiveItem: React.Dispatch<React.SetStateAction<TodoFields>>;
+	handleOnChange: (
+		e: React.ChangeEvent<HTMLInputElement>,
+		item: TodoFields
+	) => void;
 }
 
 export const AddTaskModal = (props: AddTaskModalProps) => {
-	const [activeItem, setActiveItem] = useState(props.item);
-	const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = e.target;
-		const updatedItem = { ...activeItem, [name]: value };
-
-		if (e.target.type === 'checkbox') {
-			updatedItem[name] = e.target.checked;
-		}
-
-		setActiveItem(updatedItem);
-	};
-
 	return (
 		<Modal
 			isOpen={props.isOpen}
@@ -53,8 +47,10 @@ export const AddTaskModal = (props: AddTaskModalProps) => {
 								type="text"
 								id="todo-title"
 								name="title"
-								value={activeItem.title}
-								onChange={handleOnChange}
+								value={props.activeItem.title}
+								onChange={(e) =>
+									props.handleOnChange(e, props.activeItem)
+								}
 								placeholder="Enter Todo Title"
 							/>
 							<FormHelperText>
@@ -68,8 +64,10 @@ export const AddTaskModal = (props: AddTaskModalProps) => {
 								type="text"
 								id="todo-description"
 								name="description"
-								value={activeItem.description}
-								onChange={handleOnChange}
+								value={props.activeItem.description}
+								onChange={(e) =>
+									props.handleOnChange(e, props.activeItem)
+								}
 								placeholder="Enter Todo description"
 							/>
 							<FormHelperText>
@@ -81,8 +79,11 @@ export const AddTaskModal = (props: AddTaskModalProps) => {
 								colorScheme="teal"
 								type="checkbox"
 								name="completed"
-								checked={activeItem.completed}
-								onChange={handleOnChange}>
+								isChecked={props.activeItem.completed}
+								checked={props.activeItem.completed}
+								onChange={(e) =>
+									props.handleOnChange(e, props.activeItem)
+								}>
 								<Text>Completed</Text>
 							</Checkbox>
 						</FormControl>
@@ -92,13 +93,13 @@ export const AddTaskModal = (props: AddTaskModalProps) => {
 					<Button
 						colorScheme="teal"
 						variant="secondary"
-						onClick={() => props.onSave(activeItem)}>
+						onClick={() => props.onSave(props.activeItem)}>
 						<Text>Cancel</Text>
 					</Button>
 					<Button
 						colorScheme="teal"
 						variant="solid"
-						onClick={() => props.onSave(activeItem)}>
+						onClick={() => props.onSave(props.activeItem)}>
 						<Text>Save</Text>
 					</Button>
 				</ModalFooter>

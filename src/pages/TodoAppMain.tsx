@@ -3,6 +3,8 @@ import {
 	Card,
 	CardBody,
 	CardHeader,
+	Checkbox,
+	FormControl,
 	Heading,
 	Tab,
 	TabList,
@@ -42,7 +44,7 @@ export const TodoAppMain: React.FC = () => {
 
 	useEffect(() => {
 		refreshList();
-	}, []);
+	}, [setListItems]);
 
 	const handleAddItem = () => {
 		const item = { title: '', description: '', completed: false };
@@ -85,6 +87,33 @@ export const TodoAppMain: React.FC = () => {
 		);
 	};
 
+	const handleOnChange = (
+		e: React.ChangeEvent<HTMLInputElement>,
+		item: TodoFields
+	) => {
+		const { name, value } = e.target;
+		const updatedItem: TodoFields = { ...item, [name]: value };
+
+		if (e.target.type === 'checkbox') {
+			updatedItem.completed = e.target.checked;
+
+			setListItems(
+				listItems.map((todo) =>
+					todo.id == item.id ? { ...updatedItem } : todo
+				)
+			);
+
+			item = updatedItem;
+			setActiveItem(updatedItem);
+		}
+
+		if (activeItem.title === '') {
+			setActiveItem(item);
+		} else {
+			setActiveItem(updatedItem);
+		}
+	};
+
 	const renderTodoItems = () => {
 		const displayItems =
 			Array.isArray(listItems) &&
@@ -107,34 +136,50 @@ export const TodoAppMain: React.FC = () => {
 				</Card>
 			);
 		} else {
-			return displayItems.map((item) => (
-				<Card key={item.id} className="todo-app-main--card">
-					<div className="todo-app-main--card-text">
-						<CardHeader fontSize="2xl">
-							<Text>{item.title}</Text>
-						</CardHeader>
-						<CardBody>
-							<Text>{item.description}</Text>
-						</CardBody>
-					</div>
-					<div className="todo-app-main--card-buttons">
-						<Button
-							onClick={() => handleEditItem(item)}
-							colorScheme="teal"
-							variant="outline"
-							leftIcon={<EditIcon />}>
-							<Text>Edit</Text>
-						</Button>
-						<Button
-							onClick={() => handleDeleteItem(item)}
-							colorScheme="red"
-							variant="solid"
-							leftIcon={<DeleteIcon />}>
-							<Text>Delete</Text>
-						</Button>
-					</div>
-				</Card>
-			));
+			return listItems
+				.filter((item) => item.completed === displayCompleted)
+				.map((item, index) => (
+					<Card key={index} className="todo-app-main--card">
+						<div className="todo-app-main--card-text">
+							<form>
+								<FormControl>
+									<Checkbox
+										key={item.id}
+										colorScheme="teal"
+										type="checkbox"
+										name="completed"
+										isChecked={item.completed}
+										checked={item.completed}
+										onChange={(e) => handleOnChange(e, item)}>
+										<Text>Completed</Text>
+									</Checkbox>
+								</FormControl>
+							</form>
+							<CardHeader fontSize="2xl">
+								<Text>{item.title}</Text>
+							</CardHeader>
+							<CardBody>
+								<Text>{item.description}</Text>
+							</CardBody>
+						</div>
+						<div className="todo-app-main--card-buttons">
+							<Button
+								onClick={() => handleEditItem(item)}
+								colorScheme="teal"
+								variant="outline"
+								leftIcon={<EditIcon />}>
+								<Text>Edit</Text>
+							</Button>
+							<Button
+								onClick={() => handleDeleteItem(item)}
+								colorScheme="red"
+								variant="solid"
+								leftIcon={<DeleteIcon />}>
+								<Text>Delete</Text>
+							</Button>
+						</div>
+					</Card>
+				));
 		}
 	};
 
@@ -154,10 +199,12 @@ export const TodoAppMain: React.FC = () => {
 			</Button>
 			{isModalOpen && (
 				<AddTaskModal
-					item={activeItem}
+					activeItem={activeItem}
+					setActiveItem={setActiveItem}
 					isOpen={isModalOpen}
 					setIsOpen={setIsModalOpen}
 					onSave={handleSubmit}
+					handleOnChange={handleOnChange}
 				/>
 			)}
 		</div>
