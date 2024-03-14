@@ -108,7 +108,7 @@ export const TodoAppMain: React.FC = () => {
 		}
 
 		if (activeItem.title === '') {
-			setActiveItem(item);
+			setActiveItem(updatedItem);
 		} else {
 			setActiveItem(updatedItem);
 		}
@@ -185,18 +185,19 @@ export const TodoAppMain: React.FC = () => {
 
 	return (
 		<div className="todo-app-main--container">
-			<Heading>Todo app</Heading>
-
+			<div className="todo-app-main--header-wrapper">
+				<Heading>Todo app</Heading>
+				<Button
+					className="add-button"
+					onClick={handleAddItem}
+					colorScheme="teal"
+					variant="solid"
+					leftIcon={<AddIcon />}>
+					<Text>Add task</Text>
+				</Button>
+			</div>
 			{renderTabList()}
 			{renderTodoItems()}
-			<Button
-				className="add-button"
-				onClick={handleAddItem}
-				colorScheme="teal"
-				variant="solid"
-				leftIcon={<AddIcon />}>
-				<Text>Add task</Text>
-			</Button>
 			{isModalOpen && (
 				<AddTaskModal
 					activeItem={activeItem}

@@ -93,7 +93,9 @@ export const AddTaskModal = (props: AddTaskModalProps) => {
 					<Button
 						colorScheme="teal"
 						variant="secondary"
-						onClick={() => props.onSave(props.activeItem)}>
+						onClick={() => {
+							props.setIsOpen(false);
+						}}>
 						<Text>Cancel</Text>
 					</Button>
 					<Button

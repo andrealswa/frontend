@@ -1,8 +1,12 @@
 .todo-app-main--container {
 	display: flex;
 	flex-direction: column;
-
 	width: 100%;
+
+	.todo-app-main--header-wrapper {
+		display: flex;
+		column-gap: 50px;
+	}
 
 	.todo-app-main--card {
 		display: flex;
